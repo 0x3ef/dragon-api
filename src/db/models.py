@@ -99,7 +99,27 @@ class Dragon(SQLModel, table=True):
     uid: uuid.UUID = Field(
         sa_column=Column(pg.UUID, nullable=False, primary_key=True, default=uuid.uuid7)
     )
-    name: str
+    species: str
+    firetype: str 
+
+    features: List[str] = Field(default=[], sa_type=pg.ARRAY(pg.TEXT))
+    colors: List[str] = Field(default=[], sa_type=pg.ARRAY(pg.TEXT))
+    diet: List[str] = Field(default=[], sa_type=pg.ARRAY(pg.TEXT))
+    habitat: List[str] = Field(default=[], sa_type=pg.ARRAY(pg.TEXT))
+    
+    size: str 
+    weight: int 
+    wingspan: int 
+    trainable: bool
+
+    attack: int 
+    speed: int 
+    armor: int 
+    firepower: int 
+    shotlimit: int 
+    venom: int 
+    jawstrength: int 
+    
     created_at: datetime = Field(
         sa_column=Column(pg.TIMESTAMP, default=datetime.now)
     )
