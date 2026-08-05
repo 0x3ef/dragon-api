@@ -92,6 +92,21 @@ class Image(SQLModel, table=True):
 
     dragon: Optional["Dragon"] = Relationship(back_populates="images")
 
+class DragonClass(SQLModel, table=True):
+    __tablename__ = "classes"
+
+    uid: uuid.UUID = Field(
+        sa_column=Column(pg.UUID, nullable=False, primary_key=True, default=uuid.uuid7)
+    )
+    name: str 
+    description: str 
+    icon: str
+
+    dragons: List["Dragon"] = Relationship(
+        back_populates="dragon_class",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
+
 
 class Dragon(SQLModel, table=True):
     __tablename__ = "dragons"
@@ -119,6 +134,8 @@ class Dragon(SQLModel, table=True):
     shotlimit: int 
     venom: int 
     jawstrength: int 
+
+    class_uid: Optional[uuid.UUID] = Field(default=None, foreign_key="classes.uid")
     
     created_at: datetime = Field(
         sa_column=Column(pg.TIMESTAMP, default=datetime.now)
@@ -126,6 +143,8 @@ class Dragon(SQLModel, table=True):
     updated_at: datetime = Field(
         sa_column=Column(pg.TIMESTAMP, default=datetime.now)
     )
+    
+    dragon_class: Optional[DragonClass] = Relationship(back_populates="dragons")
 
     abilities: List[Ability] = Relationship(
         back_populates="dragons",
