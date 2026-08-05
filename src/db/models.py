@@ -92,6 +92,7 @@ class Image(SQLModel, table=True):
 
     dragon: Optional["Dragon"] = Relationship(back_populates="images")
 
+
 class DragonClass(SQLModel, table=True):
     __tablename__ = "classes"
 
@@ -102,11 +103,19 @@ class DragonClass(SQLModel, table=True):
     description: str 
     icon: str
 
+    created_at: datetime = Field(
+        sa_column=Column(pg.TIMESTAMP, default=datetime.now)
+    )
+    
+    updated_at: datetime = Field(
+        sa_column=Column(pg.TIMESTAMP, default=datetime.now)
+    )
+
     dragons: List["Dragon"] = Relationship(
         back_populates="dragon_class",
         sa_relationship_kwargs={"lazy": "selectin"},
     )
-
+    
 
 class Dragon(SQLModel, table=True):
     __tablename__ = "dragons"
