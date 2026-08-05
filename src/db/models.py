@@ -42,7 +42,13 @@ class Ability(SQLModel, table=True):
         sa_column=Column(pg.UUID, nullable=False, primary_key=True, default=uuid.uuid7)
     )
     name: str
-
+    created_at: datetime = Field(
+        sa_column=Column(pg.TIMESTAMP, default=datetime.now)
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(pg.TIMESTAMP, default=datetime.now)
+    )
+    
     dragons: List["Dragon"] = Relationship(
         back_populates="abilities",
         link_model=DragonAbility,
