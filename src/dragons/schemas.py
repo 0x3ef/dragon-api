@@ -62,12 +62,16 @@ class DragonCreateModel(BaseModel):
 class DragonUpdateModel(BaseModel):
     species: Optional[str] = None
     firetype: Optional[str] = None
+    features: Optional[List[str]] = None
     features_add: Optional[List[str]] = None
     features_remove: Optional[List[str]] = None
+    colors: Optional[List[str]] = None
     colors_add: Optional[List[str]] = None
     colors_remove: Optional[List[str]] = None
+    diet: Optional[List[str]] = None
     diet_add: Optional[List[str]] = None
     diet_remove: Optional[List[str]] = None 
+    habitad: Optional[List[str]] = None
     habitat_add: Optional[List[str]] = None
     habitat_remove: Optional[List[str]] = None
     size: Optional[str] = None
@@ -82,8 +86,10 @@ class DragonUpdateModel(BaseModel):
     venom: Optional[int] = None
     jawstrength: Optional[int] = None
     class_uid: Optional[uuid.UUID] = None
+    abilities: List[uuid.UUID] = []
     ability_uids_add: List[uuid.UUID] = []
     ability_uids_remove: List[uuid.UUID] = []
+    distributions: List[uuid.UUID] = []
     distribution_uids_add: List[uuid.UUID] = []
     distribution_uids_remove: List[uuid.UUID] = []
 
