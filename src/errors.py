@@ -16,6 +16,27 @@ class ClassNotFound(DragonException):
 
 class ClassAlreadyExists(DragonException):
     """Dragon class already exists in the db"""
+    pass
+
+
+class ImageNotFound(DragonException):
+    """Image Not found"""
+    pass
+
+
+class AbilityNotFound(DragonException):
+    """Ability Not found"""
+    pass
+
+
+class DistributionNotFound(DragonException):
+    """Distribution Not found"""
+    pass 
+
+
+class DragonNotFound(DragonException):
+    """Dragon Not found"""
+    pass 
 
 
 def create_exception_handler(
@@ -47,5 +68,49 @@ def register_all_errors(app: FastAPI) -> None:
                 "message": "A dragon class with this name already exists",
                 "error_code": "class_already_exists"
                 }
+        ),
+    )
+
+    app.add_exception_handler(
+        ImageNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Image not found",
+                "error_code": "image_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        AbilityNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Ability not found",
+                "error_code": "ability_not_found",
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        DistributionNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Distribution not found",
+                "error_code": "distribution_not_found"
+            },
+        ),
+    )
+
+    app.add_exception_handler(
+        DragonNotFound,
+        create_exception_handler(
+            status_code=status.HTTP_404_NOT_FOUND,
+            initial_detail={
+                "message": "Dragon not found",
+                "error_code": "dragon_not_found"
+            },
         ),
     )
