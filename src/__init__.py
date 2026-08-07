@@ -5,6 +5,7 @@ from src.abilities.routes import abilities_router
 from src.distributions.routes import distributions_router
 from src.dragons.routes import dragons_router 
 from .errors import register_all_errors
+from .middleware import register_middleware 
 
 version = "v1"
 version_prefix = f"/api/{version}"
@@ -15,6 +16,9 @@ app = FastAPI(
 )
 
 register_all_errors(app)
+
+register_middleware(app)
+
 
 app.include_router(dragon_class_router,prefix=f"{version_prefix}/classes",tags=["classes"])
 app.include_router(images_router,prefix=f"{version_prefix}/images",tags=["images"])
