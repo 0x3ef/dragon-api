@@ -21,6 +21,11 @@ class DragonService:
         statement = select(Dragon).where(Dragon.uid == dragon_uid)
         result = await session.exec(statement)
         return result.first()
+    
+    async def get_dragon_by_species(self, dragon_species: str, session: AsyncSession) -> Optional[Dragon]:
+        statement = select(Dragon).where(Dragon.species == dragon_species)
+        result = await session.exec(statement)
+        return result.first()
 
     async def get_dragon_abilities(self, dragon: Dragon, session: AsyncSession) -> List[Ability]:
         statement = select(Ability).join(Ability.dragons).where(Dragon.uid == dragon.uid)

@@ -17,6 +17,11 @@ class DistributionsService:
         result = await session.exec(statement)
         return result.first()
 
+    async def get_distribution_by_name(self, distribution_name: str, session: AsyncSession) -> Optional[Distribution]:
+        statement = select(Distribution).where(Distribution.name == distribution_name)
+        result = await session.exec(statement)
+        return result.first()
+
     async def create_distribution(self, distribution_data: DistributionCreateModel, session: AsyncSession) -> Distribution:
         new_distribution = Distribution(**distribution_data.model_dump())
         session.add(new_distribution)

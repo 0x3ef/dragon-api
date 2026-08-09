@@ -18,6 +18,11 @@ class ImagesService:
         statement = select(Image).where(Image.uid == image_uid)
         result = await session.exec(statement)
         return result.first()
+    
+    async def get_image_by_url(self, url: str, session: AsyncSession) -> Optional[Image]:
+        statement = select(Image).where(Image.url == url)
+        result = await session.exec(statement)
+        return result.first()
 
     async def create_a_image(
         self, image_data: ImageCreateModel, session: AsyncSession

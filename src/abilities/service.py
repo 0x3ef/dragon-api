@@ -17,6 +17,11 @@ class AbilitiesService:
         result = await session.exec(statement)
         return result.first()
 
+    async def get_ability_by_name(self, name_ability: str, session: AsyncSession) -> Optional[Ability]:
+        statement = select(Ability).where(Ability.name == name_ability)
+        result = await session.exec(statement)
+        return result.first()
+
     async def create_ability(self, ability_data: AbilityCreateModel, session: AsyncSession) -> Ability:
         new_ability = Ability(**ability_data.model_dump())
         session.add(new_ability)
