@@ -10,7 +10,7 @@ class DistributionModel(BaseModel):
     alternatenames: str
     created_at: datetime
     updated_at: datetime
-    dragons_uids: Optional[List[uuid.UUID]] = []
+    dragons_uids: Optional[List[uuid.UUID]] = Field(default_factory=list)
 
 
 class DistributionCreateModel(BaseModel):

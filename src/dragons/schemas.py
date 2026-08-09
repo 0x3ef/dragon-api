@@ -30,9 +30,9 @@ class DragonModel(BaseModel):
     created_at: datetime
     updated_at: datetime
     dragon_class: Optional[DragonClassModel] = None
-    abilities: List[AbilityModel] = []
-    distributions: List[DistributionModel] = []
-    images: List[ImageModel] = []
+    abilities: List[AbilityModel] = Field(default_factory=list)
+    distributions: List[DistributionModel] = Field(default_factory=list)
+    images: List[ImageModel] = Field(default_factory=list)
 
 
 class DragonCreateModel(BaseModel):
@@ -54,9 +54,9 @@ class DragonCreateModel(BaseModel):
     venom: int
     jawstrength: int
     class_uid: Optional[uuid.UUID] = None
-    abilities: List[uuid.UUID] = []
-    distributions: List[uuid.UUID] = [] 
-    images: List[uuid.UUID] = []
+    abilities: List[uuid.UUID] = Field(default_factory=list)
+    distributions: List[uuid.UUID] = Field(default_factory=list)
+    images: List[uuid.UUID] = Field(default_factory=list)
 
 
 class DragonUpdateModel(BaseModel):
@@ -71,7 +71,7 @@ class DragonUpdateModel(BaseModel):
     diet: Optional[List[str]] = None
     diet_add: Optional[List[str]] = None
     diet_remove: Optional[List[str]] = None 
-    habitad: Optional[List[str]] = None
+    habitat: Optional[List[str]] = None
     habitat_add: Optional[List[str]] = None
     habitat_remove: Optional[List[str]] = None
     size: Optional[str] = None
@@ -86,13 +86,13 @@ class DragonUpdateModel(BaseModel):
     venom: Optional[int] = None
     jawstrength: Optional[int] = None
     class_uid: Optional[uuid.UUID] = None
-    abilities: List[uuid.UUID] = []
-    ability_uids_add: List[uuid.UUID] = []
-    ability_uids_remove: List[uuid.UUID] = []
-    distributions: List[uuid.UUID] = []
-    distribution_uids_add: List[uuid.UUID] = []
-    distribution_uids_remove: List[uuid.UUID] = []
+    abilities: List[uuid.UUID] = Field(default_factory=list)
+    ability_uids_add: List[uuid.UUID] = Field(default_factory=list)
+    ability_uids_remove: List[uuid.UUID] = Field(default_factory=list)
+    distributions: List[uuid.UUID] = Field(default_factory=list)
+    distribution_uids_add: List[uuid.UUID] = Field(default_factory=list)
+    distribution_uids_remove: List[uuid.UUID] = Field(default_factory=list)
 
 
 class DragonClassDragonsModel(DragonClassModel):
-    dragons: List[DragonModel] = []
+    dragons: List[DragonModel] = Field(default_factory=list)
