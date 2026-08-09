@@ -138,8 +138,8 @@ class Dragon(SQLModel, table=True):
     habitat: List[str] = Field(default=[], sa_type=pg.ARRAY(pg.TEXT))
     
     size: str 
-    weight: str
-    wingspan: str 
+    weight: int
+    wingspan: int 
     trainable: bool
 
     attack: int 

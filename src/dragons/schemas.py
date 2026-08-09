@@ -17,8 +17,8 @@ class DragonModel(BaseModel):
     diet: List[str] 
     habitat: List[str]
     size: str
-    weight: str 
-    wingspan: str 
+    weight: int
+    wingspan: int 
     trainable: bool
     attack: int 
     speed: int 
@@ -43,8 +43,8 @@ class DragonCreateModel(BaseModel):
     diet: List[str] 
     habitat: List[str]
     size: str
-    weight: str
-    wingspan: str 
+    weight: int
+    wingspan: int 
     trainable: bool
     attack: int 
     speed: int 
@@ -75,8 +75,8 @@ class DragonUpdateModel(BaseModel):
     habitat_add: Optional[List[str]] = None
     habitat_remove: Optional[List[str]] = None
     size: Optional[str] = None
-    weight: Optional[str] = None
-    wingspan: Optional[str] = None
+    weight: Optional[int] = None
+    wingspan: Optional[int] = None
     trainable: Optional[bool] = None
     attack: Optional[int] = None
     speed: Optional[int] = None
