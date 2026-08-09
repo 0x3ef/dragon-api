@@ -74,7 +74,7 @@ async def create_dragon(
     if dragon:
         return await dragons_service.create_dragon(dragon_data, session)
     else: 
-        return DragonAlreadyExists() 
+        raise DragonAlreadyExists() 
 
 
 @dragons_router.post("/{dragon_uid}/abilities/{ability_uid}", status_code=status.HTTP_200_OK, response_model=DragonModel)
