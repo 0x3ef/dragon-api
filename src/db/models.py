@@ -107,7 +107,7 @@ class DragonClass(SQLModel, table=True):
     )
     name: str = Field(unique=True, index=True) 
     description: str 
-    icon: str
+    icon: Optional[str] = Field(default=None)
 
     created_at: datetime = Field(
         sa_column=Column(pg.TIMESTAMP, default=datetime.now)
@@ -159,7 +159,10 @@ class Dragon(SQLModel, table=True):
         sa_column=Column(pg.TIMESTAMP, default=datetime.now)
     )
     
-    dragon_class: Optional[DragonClass] = Relationship(back_populates="dragons")
+    dragon_class: Optional[DragonClass] = Relationship(
+        back_populates="dragons",
+        sa_relationship_kwargs={"lazy": "selectin"},
+    )
 
     abilities: List[Ability] = Relationship(
         back_populates="dragons",

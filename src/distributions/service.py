@@ -10,7 +10,7 @@ class DistributionsService:
     async def get_all_distributions(self, session: AsyncSession) -> List[Distribution]:
         statement = select(Distribution).order_by(desc(Distribution.created_at))
         result = await session.exec(statement)
-        return list(result.all())
+        return result.all()
 
     async def get_distribution_by_uid(self, distribution_uid: uuid.UUID | str, session: AsyncSession) -> Optional[Distribution]:
         statement = select(Distribution).where(Distribution.uid == distribution_uid)

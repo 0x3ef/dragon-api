@@ -1,7 +1,7 @@
 import uuid 
 from datetime import datetime 
 from typing import List, Optional 
-from pydantic import BaseModel 
+from pydantic import BaseModel, Field 
 from src.abilities.schemas import AbilityModel 
 from src.distributions.schemas import DistributionModel 
 from src.images.schemas import ImageModel
@@ -56,22 +56,17 @@ class DragonCreateModel(BaseModel):
     class_uid: Optional[uuid.UUID] = None
     abilities: List[uuid.UUID] = Field(default_factory=list)
     distributions: List[uuid.UUID] = Field(default_factory=list)
-    images: List[uuid.UUID] = Field(default_factory=list)
 
 
 class DragonUpdateModel(BaseModel):
     species: Optional[str] = None
     firetype: Optional[str] = None
-    features: Optional[List[str]] = None
     features_add: Optional[List[str]] = None
     features_remove: Optional[List[str]] = None
-    colors: Optional[List[str]] = None
     colors_add: Optional[List[str]] = None
     colors_remove: Optional[List[str]] = None
-    diet: Optional[List[str]] = None
     diet_add: Optional[List[str]] = None
     diet_remove: Optional[List[str]] = None 
-    habitat: Optional[List[str]] = None
     habitat_add: Optional[List[str]] = None
     habitat_remove: Optional[List[str]] = None
     size: Optional[str] = None
@@ -86,10 +81,8 @@ class DragonUpdateModel(BaseModel):
     venom: Optional[int] = None
     jawstrength: Optional[int] = None
     class_uid: Optional[uuid.UUID] = None
-    abilities: List[uuid.UUID] = Field(default_factory=list)
     ability_uids_add: List[uuid.UUID] = Field(default_factory=list)
     ability_uids_remove: List[uuid.UUID] = Field(default_factory=list)
-    distributions: List[uuid.UUID] = Field(default_factory=list)
     distribution_uids_add: List[uuid.UUID] = Field(default_factory=list)
     distribution_uids_remove: List[uuid.UUID] = Field(default_factory=list)
 

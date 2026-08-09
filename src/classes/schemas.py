@@ -2,14 +2,13 @@ import uuid
 from datetime import datetime 
 from typing import List, Optional
 from pydantic import BaseModel
-from src.dragons.schemas import DragonModel
 
 
 class DragonClassModel(BaseModel):
     uid: uuid.UUID
     name: str
     description: str 
-    icon: str
+    icon: Optional[str] = None
     created_at: datetime 
     updated_at: datetime 
 
@@ -17,7 +16,7 @@ class DragonClassModel(BaseModel):
 class DragonClassCreateModel(BaseModel):
     name: str
     description: str 
-    icon: str
+    icon: Optional[str] = None
 
 
 class DragonClassUpdateModel(BaseModel):

@@ -8,7 +8,7 @@ from src.abilities.schemas import AbilityModel
 from src.distributions.schemas import DistributionModel
 from src.images.schemas import ImageModel
 from .service import DragonService
-from src.errors import DragonNotFound
+from src.errors import DragonNotFound, DragonAlreadyExists
 
 dragons_router = APIRouter()
 dragons_service = DragonService()
@@ -70,7 +70,11 @@ async def create_dragon(
     dragon_data: DragonCreateModel,
     session: AsyncSession = Depends(get_session)
 ) -> DragonModel:
-    return await dragons_service.create_dragon(dragon_data, session)
+    dragon = await dragons_service.get_dragon_by_species(dragon_data.species, session) 
+    if dragon:
+        return await dragons_service.create_dragon(dragon_data, session)
+    else: 
+        return DragonAlreadyExists() 
 
 
 @dragons_router.post("/{dragon_uid}/abilities/{ability_uid}", status_code=status.HTTP_200_OK, response_model=DragonModel)
@@ -97,18 +101,6 @@ async def add_distribution_to_dragon(
     return await dragons_service.add_distribution_to_dragon(
         dragon, distribution_uid, session
     )
-
-
-@dragons_router.post("/{dragon_uid}/images/{image_uid}", status_code=status.HTTP_200_OK, response_model=DragonModel)
-async def add_image_to_dragon(
-    dragon_uid: uuid.UUID | str,
-    image_uid: uuid.UUID | str,
-    session: AsyncSession = Depends(get_session)
-) -> DragonModel:
-    dragon = await dragons_service.get_dragon(dragon_uid, session)
-    if not dragon:
-        raise DragonNotFound()
-    return await dragons_service.add_image_to_dragon(dragon, image_uid, session)
 
 
 @dragons_router.patch("/{dragon_uid}", response_model=DragonModel, status_code=status.HTTP_200_OK)

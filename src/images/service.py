@@ -10,7 +10,7 @@ class ImagesService:
     async def get_all_images(self, session: AsyncSession) -> List[Image]:
         statement = select(Image).order_by(desc(Image.created_at))
         result = await session.exec(statement)
-        return list(result.all())
+        return result.all()
 
     async def get_image_by_uid(
         self, image_uid: uuid.UUID | str, session: AsyncSession

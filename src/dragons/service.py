@@ -6,16 +6,18 @@ from src.db.models import Dragon, Ability, Distribution, Image
 from .schemas import DragonCreateModel, DragonUpdateModel
 from src.abilities.service import AbilitiesService
 from src.distributions.service import DistributionsService
-
-abilities_service = AbilitiesService()
-distributions_service = DistributionsService()
+from src.errors import AbilityNotFound, DistributionNotFound
 
 
 class DragonService:
+    def __init__(self):
+        self.abilities_service =AbilitiesService()
+        self.distributions_service = DistributionsService()
+
     async def get_all_dragons(self, session: AsyncSession) -> List[Dragon]:
         statement = select(Dragon)
         result = await session.exec(statement)
-        return list(result.all())
+        return result.all()
 
     async def get_dragon(self, dragon_uid: uuid.UUID | str, session: AsyncSession) -> Optional[Dragon]:
         statement = select(Dragon).where(Dragon.uid == dragon_uid)
@@ -30,27 +32,54 @@ class DragonService:
     async def get_dragon_abilities(self, dragon: Dragon, session: AsyncSession) -> List[Ability]:
         statement = select(Ability).join(Ability.dragons).where(Dragon.uid == dragon.uid)
         result = await session.exec(statement)
-        return list(result.all())
+        return result.all()
 
     async def get_dragon_distributions(self, dragon: Dragon, session: AsyncSession) -> List[Distribution]:
         statement = select(Distribution).join(Distribution.dragons).where(Dragon.uid == dragon.uid)
         result = await session.exec(statement)
-        return list(result.all())
+        return result.all()
 
     async def get_dragon_images(self, dragon: Dragon, session: AsyncSession) -> List[Image]:
         statement = select(Image).join(Image.dragon).where(Dragon.uid == dragon.uid)
         result = await session.exec(statement)
-        return list(result.all())
+        return result.all()
 
     async def create_dragon(self, dragon_data: DragonCreateModel, session: AsyncSession) -> Dragon:
-        new_dragon = Dragon(**dragon.model_dump())
+        dragon_dict = dragon_data.model_dump(exclude={"abilities", "distributions"})
+        new_dragon = Dragon(**dragon_dict)
+
+        for ability_uid in dragon_data.abilities:
+            ability = await self.abilities_service.get_ability_by_uid(ability_uid, session)
+            if not ability: raise AbilityNotFound()
+            new_dragon.abilities.append(ability)
+
+        for distribution_uid in dragon_data.distributions:
+            distribution = await self.distributions_service.get_distribution_by_uid(distribution_uid, session)
+            if not distribution: raise DistributionNotFound()
+            new_dragon.distributions.append(distribution)
+
+        session.add(new_dragon)
+        await session.commit()
+        await session.refresh(new_dragon)
+        return new_dragon
+
+    async def create_dragon_with_relations(
+        self,
+        dragon_data: DragonCreateModel,
+        abilities: List[Ability],
+        distributions: List[Distribution],
+        session: AsyncSession
+    ) -> Dragon:
+        new_dragon = Dragon(**dragon_data.model_dump(exclude={"abilities", "distributions"}))
+        new_dragon.abilities = abilities
+        new_dragon.distributions = distributions
         session.add(new_dragon)
         await session.commit()
         await session.refresh(new_dragon)
         return new_dragon
 
     async def add_ability_to_dragon(self, dragon: Dragon, ability_uid: uuid.UUID | str, session: AsyncSession) -> Dragon:
-        ability = await abilities_service.get_ability_by_uid(ability_uid, session)
+        ability = await self.abilities_service.get_ability_by_uid(ability_uid, session)
         if ability and ability not in dragon.abilities:
             dragon.abilities.append(ability)
             session.add(dragon)
@@ -59,21 +88,10 @@ class DragonService:
         return dragon
 
     async def add_distribution_to_dragon(self, dragon: Dragon, distribution_uid: uuid.UUID | str, session: AsyncSession) -> Dragon:
-        distribution = await distributions_service.get_distribution_by_uid(distribution_uid, session)
+        distribution = await self.distributions_service.get_distribution_by_uid(distribution_uid, session)
         if distribution and distribution not in dragon.distributions:
             dragon.distributions.append(distribution)
             session.add(dragon)
-            await session.commit()
-            await session.refresh(dragon)
-        return dragon
-
-    async def add_image_to_dragon(self, dragon: Dragon, image_uid: uuid.UUID | str, session: AsyncSession) -> Dragon:
-        statement = select(Image).where(Image.uid == image_uid)
-        result = await session.exec(statement)
-        image = result.first()
-        if image:
-            image.dragon_id = dragon.uid
-            session.add(image)
             await session.commit()
             await session.refresh(dragon)
         return dragon
@@ -101,18 +119,18 @@ class DragonService:
             setattr(dragon, k, v)
 
         if dragon_data.ability_uids_add:
-            for ab_uid in dragon_data.ability_uids_add:
-                ab = await abilities_service.get_ability_by_uid(ab_uid, session)
-                if ab and ab not in dragon.abilities: dragon.abilities.append(ab)
+            for ability_uid in dragon_data.ability_uids_add:
+                ability = await self.abilities_service.get_ability_by_uid(ability_uid, session)
+                if ability and ability not in dragon.abilities: dragon.abilities.append(ability)
 
         if dragon_data.ability_uids_remove:
             remove_set = set(dragon_data.ability_uids_remove)
-            dragon.abilities = [a for a in dragon.abilities if str(a.uid) not in remove_set]
+            dragon.abilities = [ability for ability in dragon.abilities if ability.uid not in remove_set]
 
         if dragon_data.distribution_uids_add:
-            for dist_uid in dragon_data.distribution_uids_add:
-                dist = await distributions_service.get_distribution_by_uid(dist_uid, session)
-                if dist and dist not in dragon.distributions: dragon.distributions.append(dist)
+            for distribution_uid in dragon_data.distribution_uids_add:
+                distribution = await self.distributions_service.get_distribution_by_uid(distribution_uid, session)
+                if distribution and distribution not in dragon.distributions: dragon.distributions.append(distribution)
 
         if dragon_data.distribution_uids_remove:
             remove_set = set(dragon_data.distribution_uids_remove)
@@ -152,4 +170,4 @@ class DragonService:
         if not dragon: return None
         await session.delete(dragon)
         await session.commit()
-        return dragons 
+        return dragon 

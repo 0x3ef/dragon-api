@@ -38,6 +38,10 @@ class DragonNotFound(DragonException):
     """Dragon Not found"""
     pass 
 
+class DragonAlreadyExists(DragonException):
+    """Dragon already exists"""
+    pass 
+
 
 def create_exception_handler(
     status_code: int, initial_detail: Any
@@ -112,5 +116,16 @@ def register_all_errors(app: FastAPI) -> None:
                 "message": "Dragon not found",
                 "error_code": "dragon_not_found"
             },
+        ),
+    )
+
+    app.add_exception_handler(
+        DragonAlreadyExists,
+        create_exception_handler(
+            status_code=status.HTTP_409_CONFLICT,
+            initial_detail={
+                "message": "A dragon with this name already exists",
+                "error_code": "dragon_already_exists"
+                }
         ),
     )

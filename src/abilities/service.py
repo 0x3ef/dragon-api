@@ -10,7 +10,7 @@ class AbilitiesService:
     async def get_all_abilities(self, session: AsyncSession) -> List[Ability]:
         statement = select(Ability).order_by(desc(Ability.created_at))
         result = await session.exec(statement)
-        return list(result.all())
+        return result.all()
 
     async def get_ability_by_uid(self, ability_uid: uuid.UUID | str, session: AsyncSession) -> Optional[Ability]:
         statement = select(Ability).where(Ability.uid == ability_uid)
