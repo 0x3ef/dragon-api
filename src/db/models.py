@@ -105,7 +105,7 @@ class DragonClass(SQLModel, table=True):
     uid: uuid.UUID = Field(
         sa_column=Column(pg.UUID, nullable=False, primary_key=True, default=uuid.uuid7)
     )
-    name: str 
+    name: str = Field(unique=True, index=True) 
     description: str 
     icon: str
 
@@ -129,7 +129,7 @@ class Dragon(SQLModel, table=True):
     uid: uuid.UUID = Field(
         sa_column=Column(pg.UUID, nullable=False, primary_key=True, default=uuid.uuid7)
     )
-    species: str
+    species: str = Field(unique=True, index=True) 
     firetype: str 
 
     features: List[str] = Field(default=[], sa_type=pg.ARRAY(pg.TEXT))
@@ -138,8 +138,8 @@ class Dragon(SQLModel, table=True):
     habitat: List[str] = Field(default=[], sa_type=pg.ARRAY(pg.TEXT))
     
     size: str 
-    weight: int 
-    wingspan: int 
+    weight: str
+    wingspan: str 
     trainable: bool
 
     attack: int 
